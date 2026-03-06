@@ -11,4 +11,10 @@
       <ProjectReference Include="..\submodules\Velutia\src\Velutia.Cpu.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <None Include="$(SolutionDir)\roms\**"
+              CopyToOutputDirectory="PreserveNewest"
+              LinkBase="\roms\" />
+    </ItemGroup>
+
 </Project>
