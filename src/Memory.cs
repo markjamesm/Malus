@@ -10,4 +10,9 @@ public sealed class Memory
         get => _ram[address];
         set => _ram[address] = value;
     }
+
+    public void Load(byte[] rom, int address)
+    {
+        rom.CopyTo(_ram, address);
+    }
 }
