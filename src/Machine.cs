@@ -5,28 +5,38 @@ namespace Malus;
 
 public class Machine
 {
-    // ProDOS HDC paravirtualization hook
-    private const ushort ProdosHdcRomStart = 0xC700;
-    
-    // Apple II+ with Integer ROM Language Card
-    private const ushort Apple2PlusRomStart = 0xD000;
-    
-    public Machine()
+    public static void Start()
     {
-        
-    }
-
-    public void Start()
-    {
-        var memory = new Memory();
-        var a2Rom = RomLoader.LoadRom("apple2p.rom");
-        
-        memory.Load(a2Rom, Apple2PlusRomStart);
-        memory.Load(ProDosHdcRom.ProDosHdcRomMap, ProdosHdcRomStart);
-        
+        var memory = InitializeMemory();
         var bus = new Bus(memory);
         var cpu = new Cpu(bus);
 
-        cpu.Run();
+        EmulationLoop(cpu);
+    }
+    
+    private static void EmulationLoop(Cpu cpu)
+    {
+        while (true)
+        {
+            cpu.RunInstruction();
+        }
+    }
+
+    private static Memory InitializeMemory()
+    {
+        const ushort prodosHdcRomStart = 0xC700;
+        const ushort apple2PlusRomStart = 0xD000;
+        const ushort a2AuditStart = 0x6000;
+        
+        var memory = new Memory();
+        
+        var a2Rom = RomLoader.LoadRom("apple2p.rom");
+        var a2Audit = RomLoader.LoadRom("audit107.bin");
+        
+        memory.Load(a2Rom, apple2PlusRomStart);
+        memory.Load(a2Audit, a2AuditStart);
+        memory.Load(ProDosHdcRom.ProDosHdcRomMap, prodosHdcRomStart);
+        
+        return memory;
     }
 }
